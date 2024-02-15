@@ -92,6 +92,16 @@ def utilityCreateNotetrack():
                             append=sortedNotifications)
 
 
+def utilityGetSelection(objects):
+    cmds.select(objects, replace=True)
+
+    selectList = OpenMaya.MSelectionList()
+
+    OpenMaya.MGlobal.getActiveSelectionList(selectList)
+
+    return selectList
+
+
 def utilityAddNotetrack(name, frame):
     current = utilityGetNotetracks()
 
@@ -1669,18 +1679,50 @@ def exportAnimation(root, objects):
     cmds.currentUnit(angle=currentAngle)
 
 
+def exportModel(root, objects):
+    model = root.CreateModel()
+    selectList = utilityGetSelection(objects)
+
+    # Configure the scene to use degrees.
+    currentAngle = cmds.currentUnit(query=True, angle=True)
+
+    cmds.currentUnit(angle="deg")
+
+    boneToIndex = {}
+    boneToHash = {}
+
+    # Build skeleton.
+    skeleton = model.CreateSkeleton()
+
+    for i in xrange(selectList.length()):
+        dependNode = OpenMaya.MObject()
+        selectList.getDependNode(i, dependNode)
+
+        if not dependNode.hasFn(OpenMaya.MFn.kJoint):
+            continue
+
+    # Reset scene units back to user setting.
+    cmds.currentUnit(angle=currentAngle)
+
+
 def exportCast(path, exportSelected):
     cast = Cast()
     root = cast.CreateRoot()
 
     if sceneSettings["exportAnim"]:
-        if exportSelected:
-            exportAnimation(root, cmds.ls(type="joint", selection=True))
-        else:
-            exportAnimation(root, cmds.ls(type="joint"))
+        # At the moment, we only support animation on joint objects.
+        # Cast should not care where the animation goes though.
+        objects = cmds.ls(type="joint", selection=exportSelected)
+
+        exportAnimation(root, objects)
 
     if sceneSettings["exportModel"]:
-        print("")
+        # We need to export any joint, or 'mesh' with their root transforms as a model.
+        objects = cmds.ls(type="joint", selection=exportSelected)
+        objects.extend(cmds.filterExpand(
+            cmds.ls(transforms=True, selection=exportSelected), sm=12) or [])
+
+        exportModel(root, objects)
 
     cast.save(path)
 
