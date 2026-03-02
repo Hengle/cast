@@ -563,6 +563,12 @@ Cast ids are stored as integers to make it faster to serialize and deserialize.
 		<td>False</td>
  	</tr>
 	<tr>
+  		<td>Target Offset (to)</td>
+   		<td>Vector 3 (v3)</td>
+		<td>False</td>
+		<td>False</td>
+ 	</tr>
+	<tr>
   		<td>Pole Vector Bone Hash (pv)</td>
    		<td>Integer 64 (l)</td>
 		<td>False</td>

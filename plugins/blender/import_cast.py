@@ -511,6 +511,16 @@ def importSkeletonIKNode(self, skeleton, poses):
         ik.chain_count = 0
         ik.use_tail = True
 
+        # Blender ik requires a pole vector bone to orient properly.
+        poleVectorBone = handle.PoleVectorBone()
+
+        if not poleVectorBone:
+            self.report({"WARNING"},
+                        "Skipped ik \"%s\" setup due to blender requiring a pole vector bone." % ik.name)
+
+            startBone.constraints.remove(ik)
+            continue
+
         bone = startBone
 
         while True:
@@ -535,8 +545,6 @@ def importSkeletonIKNode(self, skeleton, poses):
             if handle.UseTargetRotation():
                 ik.use_rotation = True
 
-        poleVectorBone = handle.PoleVectorBone()
-
         if poleVectorBone is not None:
             poleVector = poses[poleVectorBone.Name()]
 
@@ -548,7 +556,7 @@ def importSkeletonIKNode(self, skeleton, poses):
         if poleBone is not None:
             # Warn until we figure out how to emulate this effectively.
             self.report({"WARNING"},
-                        "Unable to setup %s fully due to blender not supporting pole (twist) bones." % ik.name)
+                        "Unable to setup \"%s\" fully due to blender not supporting pole (twist) bones." % ik.name)
 
 
 def importSkeletonNode(name, skeleton, collection):

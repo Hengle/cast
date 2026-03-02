@@ -54,7 +54,7 @@ runtimeSettings = {
 }
 
 # Shared version number
-version = "1.95"
+version = "1.96"
 
 # Time unit to framerate map
 framerateMap = {
@@ -1696,7 +1696,9 @@ def importSkeletonIKNode(skeleton, handles, paths, indexes, jointTransform):
                 "%s.rotateX" % paths[indexes[poleBone.Hash()]],
                 "%s.twist" % ikHandle.fullPathName())
 
-        cmds.setAttr("%s.translate" % ikHandle.fullPathName(), 0, 0, 0)
+        targetOffset = handle.TargetOffset() or (0, 0, 0)
+
+        cmds.setAttr("%s.translate" % ikHandle.fullPathName(), *targetOffset)
         cmds.setAttr("%s.rotate" % ikHandle.fullPathName(), 0, 0, 0)
 
 

@@ -1150,6 +1150,17 @@ class IKHandle(CastNode):
         """Sets the bone that acts as a target for the chain."""
         self.CreateProperty("tb", "l").values = [hash]
 
+    def TargetOffset(self):
+        """An offset to apply to the target."""
+        to = self.properties.get("to")
+        if to is not None:
+            return to.values
+        return None
+
+    def SetTargetOffset(self, offset):
+        """Sets an offset to apply to the target."""
+        self.CreateProperty("to", "3v").values = list(offset)
+
     def PoleVectorBone(self):
         """The bone that acts as a pole vector for this chain."""
         pv = self.properties.get("pv")
