@@ -545,6 +545,13 @@ def importSkeletonIKNode(self, skeleton, poses):
             if handle.UseTargetRotation():
                 ik.use_rotation = True
 
+        targetOffset = handle.TargetOffset()
+
+        if targetOffset is not None:
+            # Warn until we figure out how to emulate this effectively.
+            self.report({"WARNING"},
+                        "Unable to setup \"%s\" fully due to blender not supporting target offsets." % ik.name)
+
         if poleVectorBone is not None:
             poleVector = poses[poleVectorBone.Name()]
 
