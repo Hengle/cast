@@ -54,7 +54,7 @@ runtimeSettings = {
 }
 
 # Shared version number
-version = "1.96"
+version = "1.97"
 
 # Time unit to framerate map
 framerateMap = {
@@ -842,7 +842,7 @@ def utilityQueryMaterialSlots(shader, matNode, path):
     fileConnections = cmds.listConnections(shader,
                                            plugs=True,
                                            connections=True,
-                                           type="file")
+                                           type="file") or []
 
     for i in xrange(0, len(fileConnections), 2):
         connection = fileConnections[i].split(".")[-1]
