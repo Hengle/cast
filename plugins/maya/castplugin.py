@@ -1193,15 +1193,17 @@ def utilityImportQuatTrackData(tracks, property, timeUnit, frameStart, frameBuff
     if mode == "absolute" or mode is None:
         for i in xrange(0, len(valueBuffer), 4):
             slot = int(i / 4)
-            euler = OpenMaya.MQuaternion(
-                valueBuffer[i], valueBuffer[i + 1], valueBuffer[i + 2], valueBuffer[i + 3]).asEulerRotation()
+            euler = OpenMaya.MQuaternion(valueBuffer[i],
+                                         valueBuffer[i + 1],
+                                         valueBuffer[i + 2],
+                                         valueBuffer[i + 3]).asEulerRotation()
 
             valuesX[slot] = euler.x
             valuesY[slot] = euler.y
             valuesZ[slot] = euler.z
     elif mode == "additive":
-        rest = utilityGetRestData(
-            tracks[0][1], "rotation_quaternion").asEulerRotation()
+        rest = utilityGetRestData(tracks[0][1],
+                                  "rotation_quaternion").asEulerRotation()
 
         for i in xrange(0, len(valueBuffer), 4):
             slot = int(i / 4)
@@ -1221,13 +1223,17 @@ def utilityImportQuatTrackData(tracks, property, timeUnit, frameStart, frameBuff
             else:
                 sampleZ = rest.z
 
-            additiveQuat = OpenMaya.MEulerRotation(
-                sampleX, sampleY, sampleZ).asQuaternion()
-            frameQuat = OpenMaya.MQuaternion(
-                valueBuffer[i], valueBuffer[i + 1], valueBuffer[i + 2], valueBuffer[i + 3])
+            additiveQuat = OpenMaya.MEulerRotation(sampleX,
+                                                   sampleY,
+                                                   sampleZ).asQuaternion()
+            frameQuat = OpenMaya.MQuaternion(valueBuffer[i],
+                                             valueBuffer[i + 1],
+                                             valueBuffer[i + 2],
+                                             valueBuffer[i + 3])
 
-            euler = utilitySlerp(
-                additiveQuat, (frameQuat * additiveQuat), blendWeight).asEulerRotation()
+            euler = utilitySlerp(additiveQuat,
+                                 (frameQuat * additiveQuat),
+                                 blendWeight).asEulerRotation()
 
             valuesX[slot] = euler.x
             valuesY[slot] = euler.y
@@ -1237,8 +1243,10 @@ def utilityImportQuatTrackData(tracks, property, timeUnit, frameStart, frameBuff
 
         for i in xrange(0, len(valueBuffer), 4):
             slot = int(i / 4)
-            frame = OpenMaya.MQuaternion(
-                valueBuffer[i], valueBuffer[i + 1], valueBuffer[i + 2], valueBuffer[i + 3])
+            frame = OpenMaya.MQuaternion(valueBuffer[i],
+                                         valueBuffer[i + 1],
+                                         valueBuffer[i + 2],
+                                         valueBuffer[i + 3])
 
             euler = (frame * rest).asEulerRotation()
 
